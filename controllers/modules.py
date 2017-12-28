@@ -17,6 +17,6 @@ from motor import MotorClient
 import json
 from bson import json_util
 
-JWT_SECRET = env.JWT_SECRET
-JWT_ALGORITHM = env.JWT_ALGORITHM
-db = MotorClient(env.db)['subconn']
+JWT_SECRET = os.environ['JWT_SECRET']
+JWT_ALGORITHM = os.environ['JWT_ALGORITHM']
+db = MotorClient(os.environ['DB_LINK'])['subconn']
