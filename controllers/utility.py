@@ -12,6 +12,6 @@ def setToken(user):
     token = jwt.encode({"username": user, "time": time},
                        JWT_SECRET, JWT_ALGORITHM)
 
-    db.token.insert({"token": token.decode(), "username": user})
+    db.token.insert({"token": token.decode(), "agent_id": user})
 
     return token.decode()

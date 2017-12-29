@@ -5,7 +5,9 @@ all routes
 from controllers import *
 
 routes = [
-    (r'/login', Agent.AgentLoginHandler)
+    (r'/agent/login', Agent.AgentLoginHandler),
+    (r'/agent/logout', Agent.LogoutHandler),
+    (r'/agent/profile', Agent.ProfileViewer)
 ]
 
 

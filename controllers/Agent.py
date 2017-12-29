@@ -13,10 +13,7 @@ class AgentLoginHandler(RequestHandler):
         agent_id = self.get_argument('agent_id')
         password = self.get_argument('password')
 
-        print(type(agent_id), password)
         user = yield db.agent_profile.find_one({'agent_id': int(agent_id)}, {'_id':0})
-
-        print(user)
 
         if user is None:
             self.write(json.dumps(dict(
@@ -55,4 +52,35 @@ class AgentLoginHandler(RequestHandler):
         self.set_status(204)
         self.finish()
 
+class ProfileViewer(RequestHandler):
+    def set_default_headers(self):
+        print("setting headers!!!")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "*")
+        self.set_header('Access-Control-Allow-Methods', ' POST, OPTIONS')
 
+    def post(self):
+        
+
+
+class LogoutHandler(RequestHandler):
+    """
+    method = POST
+    route : /logout
+    parameter : token
+    """
+    def set_default_headers(self):
+        print("setting headers!!!")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "*")
+        self.set_header('Access-Control-Allow-Methods', ' POST, OPTIONS')
+
+    @coroutine
+    def post(self):
+        token = self.get_argument("token")
+
+        db.token.remove({"token": token})
+        self.write({"status": 200, "msg": "successful"})
+
+    def options(self):
+        self.set_status(204)
