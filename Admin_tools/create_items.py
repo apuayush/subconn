@@ -5,7 +5,7 @@ import uuid
 #import pprint
 
 client = MongoClient()
-client = MongoClient('mongodb://gdgvit:gdgvit@ds133557.mlab.com:33557/subconn')
+client = MongoClient('localhost', 20717)
 db = client['subconn']
 collection = db['generated_items']
 p_list = []
