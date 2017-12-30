@@ -5,7 +5,7 @@ import uuid
 #import pprint
 
 client = MongoClient()
-client = MongoClient('localhost', 20717)
+client = MongoClient('localhost', 27017)
 db = client['subconn']
 collection = db['generated_items']
 p_list = []
@@ -26,7 +26,7 @@ def item_generator(item_name, item_quantity, item_exp):
     #print nw, ex
     for _ in range(item_quantity):
         post = {"name": item_name, "packaging_date": str(nw), "expiry_date":\
-            str(ex), "code": item_name+"|"+str(uuid.uuid4())+"|"+str(ex)}
+            str(ex), "code": item_name+"|"+str(uuid.uuid4())+"|"+str(ex), "transaction_id": "", "assigned_to": "Unassigned"}
         p_list.append(post)
 
 
