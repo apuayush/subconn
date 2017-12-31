@@ -1,7 +1,7 @@
 from controllers.modules import *
 
 
-def setToken(user):
+def setToken(user, name):
     """
     setting tokens and saving them on database
     :param user:
@@ -12,6 +12,14 @@ def setToken(user):
     token = jwt.encode({"uid": user, "time": time},
                        JWT_SECRET, JWT_ALGORITHM)
 
-    db.token.insert({"token": token.decode(), "uid": user})
+    db.token.insert({"token": token.decode(), "uid": user, "uname": name})
 
     return token.decode()
+
+
+def aadhar_scanner_parser(xml_data):
+    data = soup(xml_data, "lxml").printletterbarcodedata
+    res = {"name": data['name'], "uid": data['uid'], "district": data['dist'], "state": data['state'],
+           "postalcode": data['pc'], "gender": data['gender']}
+    return res
+

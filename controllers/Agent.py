@@ -24,7 +24,7 @@ class AgentLoginHandler(RequestHandler):
 
         elif agent['password'] == password :
 
-            jwt_token = setToken(uid)
+            jwt_token = setToken(uid, agent['uname'])
 
             self.write(json.dumps(dict(
                 uid=agent['uid'],
@@ -42,10 +42,10 @@ class AgentLoginHandler(RequestHandler):
             )
             ))
 
-    def write_error(self, status_code, **kwargs):
+    def write_error(self, status_code, message="Internal Server Error", **kwargs):
         jsonData = {
             'status': int(status_code),
-            'message': "Internal server error"
+            'message': message
         }
         self.write(json.dumps(jsonData))
 
@@ -80,8 +80,7 @@ class ProfileViewer(RequestHandler):
 
             self.write(json.dumps(json_data))
 
-    def write_error(self, status_code, message, **kwargs):
-        print(message)
+    def write_error(self, status_code, message="Internal Server Error", **kwargs):
         jsonData = {
             'status': int(status_code),
             'message': message
