@@ -5,3 +5,4 @@ env.py
 .python_history
 Dockerfile
 config.py
+xml_data.txt
