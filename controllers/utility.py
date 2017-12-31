@@ -9,9 +9,9 @@ def setToken(user):
     """
     now = datetime.now()
     time = now.strftime("%d-%m-%Y %I:%M %p")
-    token = jwt.encode({"username": user, "time": time},
+    token = jwt.encode({"uid": user, "time": time},
                        JWT_SECRET, JWT_ALGORITHM)
 
-    db.token.insert({"token": token.decode(), "agent_id": user})
+    db.token.insert({"token": token.decode(), "uid": user})
 
     return token.decode()

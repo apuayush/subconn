@@ -1,8 +1,9 @@
 from Tkinter import *
 from pymongo import MongoClient
+from config import var
 
 client = MongoClient()
-client = MongoClient('localhost', 27017)
+client = MongoClient(var.link, 27017)
 db = client['subconn']
 collection = db['agent_details']
 

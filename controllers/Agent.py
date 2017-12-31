@@ -10,24 +10,25 @@ class AgentLoginHandler(RequestHandler):
 
     @coroutine
     def post(self):
-        agent_id = self.get_argument('agent_id')
+        uid = self.get_argument('uid')
         password = self.get_argument('password')
 
-        user = yield db.agent_profile.find_one({'agent_id': int(agent_id)}, {'_id':0})
+        agent = yield db.agent_profile.find_one({'uid': int(uid)}, {'_id': 0})
 
-        if user is None:
+        if agent is None:
             self.write(json.dumps(dict(
                 status="403",
                 message="Agent_id not registered"
             )
             ))
 
-        elif user['password'] == password :
+        elif agent['password'] == password :
 
-            jwt_token = setToken(agent_id)
+            jwt_token = setToken(uid)
 
             self.write(json.dumps(dict(
-                user="admin",
+                uid=agent['uid'],
+                uname=agent['uname'],
                 token=jwt_token,
                 status="200",
                 message="authenticated"
@@ -52,6 +53,7 @@ class AgentLoginHandler(RequestHandler):
         self.set_status(204)
         self.finish()
 
+
 class ProfileViewer(RequestHandler):
     def set_default_headers(self):
         print("setting headers!!!")
@@ -59,8 +61,36 @@ class ProfileViewer(RequestHandler):
         self.set_header("Access-Control-Allow-Headers", "*")
         self.set_header('Access-Control-Allow-Methods', ' POST, OPTIONS')
 
+    @coroutine
     def post(self):
-        
+        token = self.get_argument('token')
+
+        token_from_db = yield db.token.find_one({'token': token})
+
+        if token_from_db is None:
+            self.write_error(401, "unauthorized token")
+
+        else:
+            profile = yield db.agent_profile.find_one({'uid': int(token_from_db['uid'])}, {'_id': 0})
+            json_data = {
+                'uname': profile['uname'],
+                'uid': profile['uid'],
+                'transactions': profile['transactions']
+            }
+
+            self.write(json.dumps(json_data))
+
+    def write_error(self, status_code, message, **kwargs):
+        print(message)
+        jsonData = {
+            'status': int(status_code),
+            'message': message
+        }
+        self.write(json.dumps(jsonData))
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
 
 
 class LogoutHandler(RequestHandler):
