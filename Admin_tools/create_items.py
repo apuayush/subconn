@@ -2,10 +2,11 @@ from Tkinter import *
 from datetime import *
 from pymongo import MongoClient
 import uuid
+from config import var
 #import pprint
 
 client = MongoClient()
-client = MongoClient('localhost', 27017)
+client = MongoClient(var.link, 27017)
 db = client['subconn']
 collection = db['generated_items']
 p_list = []
