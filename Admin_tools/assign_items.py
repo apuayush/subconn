@@ -12,20 +12,20 @@ sugar = 0
 oil = 0
 def check():
     global rice, wheat, sugar, oil
-    rice = db.generated_items.find({"name": "Rice", "assigned_to": "Unassigned"}).count()
-    wheat = db.generated_items.find({"name": "Wheat", "assigned_to": "Unassigned"}).count()
-    sugar = db.generated_items.find({"name": "Sugar", "assigned_to": "Unassigned"}).count()
-    oil = db.generated_items.find({"name": "Oil", "assigned_to": "Unassigned"}).count()
+    rice = db.items.find({"name": "Rice", "assigned_to": "Factory"}).count()
+    wheat = db.items.find({"name": "Wheat", "assigned_to": "Factory"}).count()
+    sugar = db.items.find({"name": "Sugar", "assigned_to": "Factory"}).count()
+    oil = db.items.find({"name": "Oil", "assigned_to": "Factory"}).count()
     blank1.insert(0, rice)
     blank2.insert(0, wheat)
     blank3.insert(0, sugar)
     blank4.insert(0, oil)
 
 def mark(uid, typ, quan):
-    for each in db.generated_items.find({"name": typ, "assigned_to": "Unassigned"}):
+    for each in db.items.find({"name": typ, "assigned_to": "Factory"}):
         if not quan:
             break
-        db.generated_items.update({"code": each["code"]}, {'$set': {"assigned_to": uid}})
+        db.items.update({"code": each["code"]}, {'$set': {"assigned_to": uid}})
         quan -= 1
 
 def is_number(s, val):
@@ -41,12 +41,13 @@ def is_number(s, val):
 def assign():
     uid = name.get()
     if db.agent_details.find({"userid": uid}).count() == 1:
-        each = db.agent_details.find({"userid": uid})[0]
+        each = db.agent_details.find({"userid": uid})[0]["item_count"]
         r = is_number(rb.get(), rice)
         w = is_number(wb.get(), wheat)
         s = is_number(sb.get(), sugar)
         o = is_number(ob.get(), oil)
-        db.agent_details.update({"userid": uid}, {'$set': {"Rice": each["Rice"]+r, "Wheat": each["Wheat"]+w, "Sugar": each["Sugar"]+s, "Oil": each["Oil"]+o}})
+        db.agent_details.update({"userid": uid}, {'$set':\
+            {"item_count": {"Rice": each["Rice"]+r, "Wheat": each["Wheat"]+w, "Sugar": each["Sugar"]+s, "Oil": each["Oil"]+o}}})
         mark(uid, "Rice", r)
         mark(uid, "Wheat", w)
         mark(uid, "Sugar", s)
