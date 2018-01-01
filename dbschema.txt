@@ -1,0 +1,64 @@
+Databese schema
+
+Aadhaar details
+Store details from Aadhaar_scanner_parser
+Every scanned Aadhaar must be stored
+
+{
+  "uid": "", (primary key)
+  "name": "",
+  "district": "",
+  "state": "",
+  "postal_code": "",
+  "gender": ""
+}
+
+-----------------------------------------------------------------------------------------
+
+MASTER TABLE
+Items details -> Generated items
+Store all details regarding items
+
+{
+  "name": "", (Rice, Wheat, ...)
+  "packaging_date": "",
+  "expiry_date": "",
+  "code": "", (primary key) -> Unique value for each item also used to generate qr code
+  "transaction": "" (latest transaction) -> returned from blockchain
+}
+
+------------------------------------------------------------------------------------------
+
+Agent details
+Only stores details of agents
+
+{
+  "uid": "",
+  "uname": "",
+  "password": "",
+  "item_count": -> Count can be updated by querying the generated_items["assigned_to"]
+    {
+      "Rice": "",
+      "Wheat": "",
+      ...
+    }
+}
+
+-------------------------------------------------------------------------------------------
+@Surya
+
+Blockchain transactions
+Input parameters
+  from_id, to_id, (uid)
+  previous_transaction
+  gps_location (maybe)
+Return value
+  Transaction hash
+
+{
+  "transacton": "", (transaction hash)
+  "from_id": "",
+  "to_id": "",
+  "gps_location": "",
+  "previous_transaction": "",
+}
