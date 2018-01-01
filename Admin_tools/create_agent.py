@@ -11,7 +11,7 @@ def agent():
     uid = str(blank1.get())
     aid = str(blank2.get())
     pas = str(blank3.get())
-    post = {"uid": uid, "userid": aid, "password": pas, "item_count": {"Rice": 0, "Wheat": 0, "Sugar": 0, "Oil": 0}}
+    post = {"uid": uid, "uname": aid, "password": pas, "item_count": {"Rice": 0, "Wheat": 0, "Sugar": 0, "Oil": 0}}
     db.agent_details.insert(post)
     blank1.delete(0, 'end')
     blank2.delete(0, 'end')

@@ -39,14 +39,16 @@ def is_number(s, val):
         return 0
 
 def assign():
-    uid = name.get()
-    if db.agent_details.find({"userid": uid}).count() == 1:
-        each = db.agent_details.find({"userid": uid})[0]["item_count"]
+    uname = name.get()
+    if db.agent_details.find({"uname": uname}).count() == 1:
+        each = db.agent_details.find({"uname": uname})[0]
+        uid = each["uid"]
+        each = each["item_count"]
         r = is_number(rb.get(), rice)
         w = is_number(wb.get(), wheat)
         s = is_number(sb.get(), sugar)
         o = is_number(ob.get(), oil)
-        db.agent_details.update({"userid": uid}, {'$set':\
+        db.agent_details.update({"uname": uname}, {'$set':\
             {"item_count": {"Rice": each["Rice"]+r, "Wheat": each["Wheat"]+w, "Sugar": each["Sugar"]+s, "Oil": each["Oil"]+o}}})
         mark(uid, "Rice", r)
         mark(uid, "Wheat", w)
