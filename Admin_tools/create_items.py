@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 from datetime import *
 from pymongo import MongoClient
 import uuid
@@ -8,7 +8,7 @@ from config import var
 client = MongoClient()
 client = MongoClient(var.link, 27017)
 db = client['subconn']
-collection = db['generated_items']
+collection = db['items']
 p_list = []
 
 ch = ''
@@ -27,7 +27,7 @@ def item_generator(item_name, item_quantity, item_exp):
     #print nw, ex
     for _ in range(item_quantity):
         post = {"name": item_name, "packaging_date": str(nw), "expiry_date":\
-            str(ex), "code": item_name+"|"+str(uuid.uuid4())+"|"+str(ex), "transaction_id": "", "assigned_to": "Unassigned"}
+            str(ex), "code": item_name+"|"+str(uuid.uuid4())+"|"+str(ex), "transaction_id": "None", "assigned_to": "Factory"}
         p_list.append(post)
 
 
@@ -58,7 +58,7 @@ def show_answer():
     blank1.delete(0, 'end')
     if len(p_list)>0:
         #pprint.pprint(p_list)
-        db.generated_items.insert_many(p_list)
+        db.items.insert_many(p_list)
         del p_list[:]
 
 

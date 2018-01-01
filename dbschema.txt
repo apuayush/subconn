@@ -24,6 +24,7 @@ Store all details regarding items
   "packaging_date": "",
   "expiry_date": "",
   "code": "", (primary key) -> Unique value for each item also used to generate qr code
+  "assigned_to": "", (uid)
   "transaction": "" (latest transaction) -> returned from blockchain
 }
 
