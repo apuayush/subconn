@@ -13,7 +13,7 @@ class AgentLoginHandler(RequestHandler):
         uid = self.get_argument('uid')
         password = self.get_argument('password')
 
-        agent = yield db.agent_profile.find_one({'uid': int(uid)}, {'_id': 0})
+        agent = yield db.agent_details.find_one({'uid': int(uid)}, {'_id': 0})
 
         if agent is None:
             self.write(json.dumps(dict(
@@ -71,7 +71,7 @@ class ProfileViewer(RequestHandler):
             self.write_error(401, "unauthorized token")
 
         else:
-            profile = yield db.agent_profile.find_one({'uid': int(token_from_db['uid'])}, {'_id': 0})
+            profile = yield db.agent_profile.find_one({'uid': token_from_db['uid']}, {'_id': 0})
             json_data = {
                 'uname': profile['uname'],
                 'uid': profile['uid'],

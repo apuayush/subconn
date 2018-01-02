@@ -12,7 +12,7 @@ db = client['subconn']
 collection = db['agent_details']
 
 def agent():
-    uid = str(blank1.get())
+    uid = int(blank1.get())
     aid = str(blank2.get())
     pas = str(blank3.get())
     post = {"uid": uid, "uname": aid, "password": pas, "item_count": {"Rice": 0, "Wheat": 0, "Sugar": 0, "Oil": 0}}
