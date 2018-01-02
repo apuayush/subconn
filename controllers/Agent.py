@@ -66,12 +66,11 @@ class ProfileViewer(RequestHandler):
         token = self.get_argument('token')
 
         token_from_db = yield db.token.find_one({'token': token})
-
         if token_from_db is None:
             self.write_error(401, "unauthorized token")
 
         else:
-            profile = yield db.agent_profile.find_one({'uid': token_from_db['uid']}, {'_id': 0})
+            profile = yield db.agent_details.find_one({'uid': int(token_from_db['uid'])}, {'_id': 0})
             json_data = {
                 'uname': profile['uname'],
                 'uid': profile['uid'],
