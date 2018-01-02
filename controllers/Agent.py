@@ -22,7 +22,7 @@ class AgentLoginHandler(RequestHandler):
             )
             ))
 
-        elif agent['password'] == password :
+        elif agent['password'] == password:
 
             jwt_token = setToken(uid, agent['uname'])
 
@@ -75,7 +75,7 @@ class ProfileViewer(RequestHandler):
             json_data = {
                 'uname': profile['uname'],
                 'uid': profile['uid'],
-                'transactions': profile['transactions']
+                'itemcount': profile['item_count']
             }
 
             self.write(json.dumps(json_data))

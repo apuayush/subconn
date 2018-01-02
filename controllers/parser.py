@@ -1,6 +1,7 @@
 from controllers.modules import *
 from controllers.utility import *
 
+
 class AadharAuthentication(RequestHandler):
     def set_default_headers(self):
         print("setting headers!!!")
@@ -33,3 +34,7 @@ class AadharAuthentication(RequestHandler):
             'message': message
         }
         self.write(json.dumps(jsonData))
+
+    def options(self):
+        self.set_status(204)
+        self.finish()

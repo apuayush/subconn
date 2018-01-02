@@ -1,6 +1,10 @@
-from Tkinter import *
 from pymongo import MongoClient
 from config import var
+import sys
+if sys.version_info[0] < 3:
+    from Tkinter import *
+else:
+    from tkinter import *
 
 client = MongoClient()
 client = MongoClient(var.link, 27017)
