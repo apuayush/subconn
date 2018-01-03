@@ -23,3 +23,12 @@ def aadhar_scanner_parser(xml_data):
            "postalcode": data['pc'], "gender": data['gender']}
     return res
 
+
+def hash(data):
+    data_hash = sha256(json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()
+    return data_hash
+
+@coroutine
+def update_last_transaction_id(last_transaction_id):
+    yield db.last_transaction.remove({})
+    yield db.last_transaction.insert({'last_transaction_id': last_transaction_id})

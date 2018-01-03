@@ -1,7 +1,7 @@
 from datetime import *
 from pymongo import MongoClient
 import uuid
-import env
+from config import var
 #import pprint
 
 import sys
