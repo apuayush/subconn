@@ -21,15 +21,26 @@ function viewLedger(req, res) {
 }
 
 function makeTransaction(req, res) {
+    /*
+    expected request body:
+    from: from uid
+    to: to uid
+    jwt: token of user
+    gps: string
+    prev_item_transaction
+    */
     let from = req.body.from;
     let to = req.body.to;
+    let prev_trans = req.body.prev_trans;
+    let gps = req.body.gps;
 
     try {
-        let transHash = blockchain.sendTransaction(from, to);
+        let transHash = blockchain.sendTransaction(from, to, prev_trans, gps);
 
         res.json({
             status: 'success',
-            transactionHash: transHash
+            transactionHash: transHash,
+            dateOfTransaction: new Date()
         })
     }
     catch(err) {
@@ -40,6 +51,8 @@ function makeTransaction(req, res) {
         })
     }    
 }
+
+// TODO route to verify the transactions
 
 app.route('/viewLedger')
 .get(viewLedger);
