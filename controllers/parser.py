@@ -15,7 +15,7 @@ class AadharAuthentication(RequestHandler):
         token_from_db = yield db.token.find_one({'token': token})
 
         if token_from_db is None:
-            self.write_error(401, "unauthorized token")
+            self.write_error(401, message="unauthorized token")
 
         else:
             # request parameters
