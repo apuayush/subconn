@@ -19,11 +19,10 @@ def setToken(user, name):
 
 def aadhar_scanner_parser(xml_data):
 
-    data = soup(xml_data, "lxml").printletterbarcodedata
-    res = {"uname": data['name'], "uid": int(data['uid']), "district": data['dist'], "state": data['state'],
-           "postalcode": data['pc'], "gender": data['gender']}
-    print(res)
-    return res
+    data = xmltodict.parse(xml_data)
+    data = dict(data['PrintLetterBarcodeData'])
+    print(data.keys())
+    return {'uid':data['@uid'],'uname':data['@name']}
 
 
 def hash(data):
