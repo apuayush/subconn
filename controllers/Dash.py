@@ -10,9 +10,16 @@ class InsertTransaction(RequestHandler):
 
     @coroutine
     def post(self):
-        from_id = self.get_argument('from_id')
+        token = self.get_argument('token')
+
+        token_from_db = yield db.token.find_one({'token': token})
+        if token_from_db is None:
+            self.write_error(401, "unauthorized token")
+            return
+
+        from_id = token_from_db['uid']
         to_id = self.get_argument('to_id')
-        transaction_id = self.get_argument('transaction_id')
+        items = self.get_argument('items')
 
         last_transaction_id = yield db.last_transaction.find_one()
         last_transaction_id = last_transaction_id['last_transaction_id']
@@ -22,7 +29,7 @@ class InsertTransaction(RequestHandler):
             "from_id": from_id,
             "to_id": to_id,
             "transaction_id": transaction_id,
-            "last_transaction_id":last_transaction_id
+            "last_transaction_id": last_transaction_id
         }
 
         data_hash = hash_function(data)
@@ -31,4 +38,19 @@ class InsertTransaction(RequestHandler):
                                 "previous_transaction": last_transaction_id})
         last_transaction_id = data_hash
         yield update_last_transaction_id(last_transaction_id)
+        self.write(last_transaction_id)
 
+    def write_error(self, status_code, message="Internal Server Error", **kwargs):
+        jsonData = {
+            'status': int(status_code),
+            'message': message
+        }
+        self.write(json.dumps(jsonData))
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
+
+
+class ValidateTable(RequestHandler):
+    pass
