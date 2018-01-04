@@ -17,10 +17,11 @@ import env
 from motor import MotorClient
 import json
 from bson import json_util
+import requests
 
 # hash libraries
 from hashlib import sha256
-
+#
 # JWT_SECRET = env.JWT_SECRET
 # JWT_ALGORITHM = env.JWT_ALGORITHM
 # db = MotorClient(env.db)['subconn']

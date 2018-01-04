@@ -18,7 +18,10 @@ class AadharAuthentication(RequestHandler):
             self.write_error(401, "unauthorized token")
 
         else:
+            # request parameters
             xml_data = self.get_argument('xml_data')
+            items_req = self.get_argument('items')
+            gps = self.get_argument('gps')
 
             try:
                 to_id = aadhar_scanner_parser(xml_data)
@@ -28,12 +31,10 @@ class AadharAuthentication(RequestHandler):
                 return
 
             from_id = token_from_db['uid']
-            gps_location = self.get_argument('gps')
-
             customer = yield db.aadhar.find_one({'uid': to_id['uid']})
 
             if customer == None:
-                push_data = {
+                customer = {
                     'item_count': {
                         'Rice': 5,
                         'Sugar': 5,
@@ -45,14 +46,10 @@ class AadharAuthentication(RequestHandler):
                 print(push_data)
                 yield db.aadhar.insert(push_data)
 
-            validation(from_id, to_id)
-
-
-
-
-
-
-            # self.write(json.dumps({**agent, **customer}))
+            items_req = items_req[1:-1].replace(r'"', "").split(',')
+            status = yield validation(from_id, to_id['uid'], items_req, customer['item_count'], gps, token)
+            print(status)
+            self.write(status)
 
     def write_error(self, status_code, message="Internal Server Error", **kwargs):
         jsonData = {
