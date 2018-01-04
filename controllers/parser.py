@@ -26,8 +26,10 @@ class AadharAuthentication(RequestHandler):
 
             try:
                 to_id = aadhar_scanner_parser(xml_data)
+                print("I m inside aadhar")
             except:
                 self.write_error(400, "Not aadhar")
+                print("Not inside aadhar")
                 return
 
             from_id = int(token_from_db['uid'])

@@ -21,6 +21,7 @@ def aadhar_scanner_parser(xml_data):
     data = soup(xml_data, "lxml").printletterbarcodedata
     res = {"uname": data['name'], "uid": int(data['uid']), "district": data['dist'], "state": data['state'],
            "postalcode": data['pc'], "gender": data['gender']}
+    print(res)
     return res
 
 
