@@ -17,7 +17,6 @@ def setToken(user, name):
     return token.decode()
 
 
-@coroutine
 def aadhar_scanner_parser(xml_data):
     try:
         data = soup(xml_data, "lxml").printletterbarcodedata
