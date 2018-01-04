@@ -85,7 +85,7 @@ def validation(from_id, to_id, items, item_count, gps, token):
                                        {'transaction_id': tid['transactionHash'],
                                         "assigned_to": to_id}})
 
-        aadhar_det = yield db.aadhar.find_one({'uid': from_id})
+        aadhar_det = yield db.aadhar.find_one({'uid': to_id})
         aadhar_data = aadhar_det['item_count']
         aadhar_items = {
             'Rice': aadhar_data['Rice'] - prod['Rice'],

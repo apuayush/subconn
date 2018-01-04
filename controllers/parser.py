@@ -45,7 +45,9 @@ class AadharAuthentication(RequestHandler):
                 }
                 yield db.aadhar.insert(customer)
 
+            items_req = ''.join(items_req.split())
             items_req = items_req[1:-1].replace(r'"', "").split(',')
+            print(items_req)
             status = yield validation(int(from_id), int(to_id['uid']), items_req, customer['item_count'], gps, token)
             print(status)
             self.write(status)
