@@ -58,8 +58,7 @@ def validation(from_id, to_id, items, item_count, gps, token):
 
     if not flag:
         return status
-
-
+    # update on agent count
     for one in item_count.keys():
         item_count[one] -= prod[one]
         if item_count[one] < 0:
@@ -87,6 +86,22 @@ def validation(from_id, to_id, items, item_count, gps, token):
                                        {'transaction_id': tid['transactionHash'],
                                         "assigned_to": to_id}})
 
+        yield db.aadhar.update({'uid': to_id} , {'$set':{'item_count':
+                                                                    item_count
+                                                                 }})
+
+        agent_det = yield db.agent_details.find_one({'uid': from_id})
+        agent_data = agent_det['item_count']
+        agent_items = {
+            'Rice': agent_data['Rice'] - prod['Rice'],
+            'Wheat': agent_data['Wheat'] - prod['Wheat'],
+            'Oil': agent_data['Oil'] - prod['Oil'],
+            'Sugar': agent_data['Sugar'] - prod['Sugar']
+        }
+
+        yield db.agent_details.update({'uid': from_id},{'$set': {
+            'items_count': agent_items
+        }})
         status['success'] = True
         status["message"] = tid['transactionHash']
         status['invalid_list'] = []

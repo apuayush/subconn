@@ -22,12 +22,11 @@ class AadharAuthentication(RequestHandler):
             xml_data = self.get_argument('xml_data')
             items_req = self.get_argument('items')
             gps = self.get_argument('gps')
-
+            to_id = None
             try:
                 to_id = aadhar_scanner_parser(xml_data)
             except:
                 self.write_error(400, "Not aadhar")
-                to_id = None
                 return
 
             from_id = token_from_db['uid']
