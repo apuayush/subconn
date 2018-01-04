@@ -6,8 +6,7 @@ if sys.version_info[0] < 3:
 else:
     from tkinter import *
 
-client = MongoClient()
-client = MongoClient(var.link, 27017)
+client = MongoClient(var.link)
 db = client['subconn']
 
 rice = 0
@@ -43,16 +42,16 @@ def is_number(s, val):
         return 0
 
 def assign():
-    uname = name.get()
-    if db.agent_details.find({"uname": uname}).count() == 1:
-        each = db.agent_details.find({"uname": uname})[0]
+    uname = int(name.get())
+    if db.agent_details.find({"uid": uname}).count() == 1:
+        each = db.agent_details.find({"uid": uname})[0]
         uid = each["uid"]
         each = each["item_count"]
         r = is_number(rb.get(), rice)
         w = is_number(wb.get(), wheat)
         s = is_number(sb.get(), sugar)
         o = is_number(ob.get(), oil)
-        db.agent_details.update({"uname": uname}, {'$set':\
+        db.agent_details.update({"uid": uname}, {'$set':\
             {"item_count": {"Rice": each["Rice"]+r, "Wheat": each["Wheat"]+w, "Sugar": each["Sugar"]+s, "Oil": each["Oil"]+o}}})
         mark(uid, "Rice", r)
         mark(uid, "Wheat", w)
@@ -73,7 +72,7 @@ main = Tk()
 main.resizable(0, 0)
 fnt = (None, 20)
 
-Label(main, text="Agent id", font=fnt).grid(row=0)
+Label(main, text="Agent Aadhar", font=fnt).grid(row=0)
 name = Entry(main, font=fnt)
 name.grid(row=0, column=1)
 

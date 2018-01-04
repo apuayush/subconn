@@ -10,7 +10,8 @@ routes = [
     (r'/agent/profile', Agent.ProfileViewer),
     (r'/transaction/aadhar', parser.AadharAuthentication),
     (r'/dash/insert', Dash.InsertTransaction),
-    (r'/dash/validate', Dash.ValidateTable)
+    (r'/dash/validate', Dash.ValidateTable),
+    (r'/agent/complaint', Complain.ComplainHandler)
 ]
 
 
