@@ -16,8 +16,10 @@ function extractData(transaction) {
     data.transHash = transaction.transactionHash;
     transaction = transaction.data.slice(2);
 
-    data.from = hexToString(transaction.slice(0,transaction.length/2-1));
-    data.to = hexToString(transaction.slice(transaction.length/2));
+    data.from = hexToString(transaction.slice(0, transaction.length/4-1));
+    data.to = hexToString(transaction.slice(transaction.length/4, transaction.length/2 - 1));
+    data.prev_item_transaction = hexToString(transaction.slice(transaction.length/2, 3 * transaction.length/4 - 1));
+    data.gps = hexToString(transaction.slice(3 * transaction.length/4));
 
     return data;
 }

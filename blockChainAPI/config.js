@@ -4,8 +4,8 @@ const Web3 = require('web3');
 let web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8042'));
 
 // might change when we deploy a new contract
-let abi = [{"constant":false,"inputs":[{"name":"from","type":"bytes32"},{"name":"to","type":"bytes32"}],"name":"makeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"from","type":"bytes32"},{"indexed":false,"name":"to","type":"bytes32"}],"name":"TransactionSuccessful","type":"event"}];
-let adr = '0x64767d463b3373ba083a3bdc13bb0988ada30d64';
+let abi = [{"constant":false,"inputs":[{"name":"from","type":"bytes32"},{"name":"to","type":"bytes32"},{"name":"prev_item_transaction","type":"bytes32"},{"name":"gps","type":"bytes32"}],"name":"makeTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"from","type":"bytes32"},{"indexed":false,"name":"to","type":"bytes32"},{"indexed":false,"name":"prev_item_transaction","type":"bytes32"},{"indexed":false,"name":"gps","type":"bytes32"}],"name":"TransactionSuccessful","type":"event"}];
+let adr = '0x995cde5a5c695cf77689c343ec4b74f3dd7c1205';
 let contract = web3.eth.contract(abi).at(adr);
 
 // enable transactions from account 0
@@ -19,13 +19,13 @@ function getAccounts() {
     return web3.eth.accounts;
 }
 
-function sendTransaction(from, to) {
+function sendTransaction(from, to, prev_item_transaction, gps) {
     /*
     make a transaction and return the transaction hash
     NOTE: the client(geth) needs to be mining for transaction to 
     complete
     */
-    let transHash = contract.makeTransaction(from, to);
+    let transHash = contract.makeTransaction(from, to, prev_item_transaction, gps);
     return transHash;
 }
 
@@ -41,7 +41,7 @@ function useLedgers(callback) {
         toBlock: 'latest',
         to: 'latest',
         address: adr,
-        topics: [web3.sha3('TransactionSuccessful(bytes32,bytes32)')]
+        topics: [web3.sha3('TransactionSuccessful(bytes32,bytes32,bytes32,bytes32)')]
     };
 
     let filter = web3.eth.filter(options);

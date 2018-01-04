@@ -6,4 +6,5 @@ env.py
 Dockerfile
 config.py
 xml_data.txt
-blockChainAPI/node_modules/
+node_modules/
+blockChainAPI/db.json
