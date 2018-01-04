@@ -19,7 +19,7 @@ def setToken(user, name):
 
 def aadhar_scanner_parser(xml_data):
     data = soup(xml_data, "lxml").printletterbarcodedata
-    res = {"name": data['name'], "uid": data['uid'], "district": data['dist'], "state": data['state'],
+    res = {"uname": data['name'], "uid": data['uid'], "district": data['dist'], "state": data['state'],
            "postalcode": data['pc'], "gender": data['gender']}
     return res
 
@@ -28,7 +28,5 @@ def hash(data):
     data_hash = sha256(json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()
     return data_hash
 
-@coroutine
-def update_last_transaction_id(last_transaction_id):
-    yield db.last_transaction.remove({})
-    yield db.last_transaction.insert({'last_transaction_id': last_transaction_id})
+def validation(from_id, to_id):
+    pass

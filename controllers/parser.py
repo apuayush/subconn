@@ -19,14 +19,40 @@ class AadharAuthentication(RequestHandler):
 
         else:
             xml_data = self.get_argument('xml_data')
-            customer = aadhar_scanner_parser(xml_data)
-            agent = {
-                'uid': token_from_db['uid'],
-                'uname': token_from_db['uid'],
 
-            }
+            try:
+                to_id = aadhar_scanner_parser(xml_data)
+            except:
+                self.write_error(400, "Not aadhar")
+                to_id = None
+                return
 
-            self.write(json.dumps({**agent, **customer}))
+            from_id = token_from_db['uid']
+            gps_location = self.get_argument('gps')
+
+            customer = yield db.aadhar.find_one({'uid': to_id['uid']})
+
+            if customer == None:
+                push_data = {
+                    'item_count': {
+                        'Rice': 5,
+                        'Sugar': 5,
+                        'Oil': 5,
+                        'Wheat': 5
+                    },
+                    **to_id
+                }
+                print(push_data)
+                yield db.aadhar.insert(push_data)
+
+            validation(from_id, to_id)
+
+
+
+
+
+
+            # self.write(json.dumps({**agent, **customer}))
 
     def write_error(self, status_code, message="Internal Server Error", **kwargs):
         jsonData = {
