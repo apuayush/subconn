@@ -22,7 +22,11 @@ class AadharAuthentication(RequestHandler):
             xml_data = self.get_argument('xml_data')
             items_req = self.get_argument('items')
             gps = self.get_argument('gps')
-            to_id = aadhar_scanner_parser(xml_data)
+
+            data = soup(xml_data, "lxml").printletterbarcodedata
+            to_id = {"uname": data['name'], "uid": int(data['uid']), "district": data['dist'], "state": data['state'],
+                   "postalcode": data['pc'], "gender": data['gender']}
+
             print(to_id)
 
             if to_id == None:
