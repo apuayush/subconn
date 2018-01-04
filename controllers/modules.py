@@ -13,7 +13,7 @@ import json
 import os
 import base64
 from datetime import datetime
-import env
+# import env
 from motor import MotorClient
 import json
 from bson import json_util
@@ -22,10 +22,10 @@ import requests
 # hash libraries
 from hashlib import sha256
 #
-# JWT_SECRET = env.JWT_SECRET
-# JWT_ALGORITHM = env.JWT_ALGORITHM
-# db = MotorClient(env.db)['subconn']
-
-JWT_SECRET = os.environ['JWT_SECRET']
-JWT_ALGORITHM = os.environ['JWT_ALGORITHM']
-db = MotorClient(os.environ['DB_LINK'])['subconn']
+JWT_SECRET = env.JWT_SECRET
+JWT_ALGORITHM = env.JWT_ALGORITHM
+db = MotorClient(env.db)['subconn']
+#
+# JWT_SECRET = os.environ['JWT_SECRET']
+# JWT_ALGORITHM = os.environ['JWT_ALGORITHM']
+# db = MotorClient(os.environ['DB_LINK'])['subconn']
