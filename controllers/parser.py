@@ -22,7 +22,7 @@ class AadharAuthentication(RequestHandler):
             xml_data = self.get_argument('xml_data')
             items_req = self.get_argument('items')
             gps = self.get_argument('gps')
-            to_id = aadhar_scanner_parser(xml_data)
+            to_id = yield aadhar_scanner_parser(xml_data)
 
             if to_id == None:
                 self.write_error("400", message="Not aadhar")
