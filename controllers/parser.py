@@ -23,14 +23,15 @@ class AadharAuthentication(RequestHandler):
             items_req = self.get_argument('items')
             gps = self.get_argument('gps')
             to_id = None
+
             try:
                 to_id = aadhar_scanner_parser(xml_data)
             except:
                 self.write_error(400, "Not aadhar")
                 return
 
-            from_id = token_from_db['uid']
-            customer = yield db.aadhar.find_one({'uid': to_id['uid']})
+            from_id = int(token_from_db['uid'])
+            customer = yield db.aadhar.find_one({'uid': int(to_id['uid'])})
 
             if customer == None:
                 customer = {
@@ -45,7 +46,7 @@ class AadharAuthentication(RequestHandler):
                 yield db.aadhar.insert(customer)
 
             items_req = items_req[1:-1].replace(r'"', "").split(',')
-            status = yield validation(from_id, to_id['uid'], items_req, customer['item_count'], gps, token)
+            status = yield validation(int(from_id), int(to_id['uid']), items_req, customer['item_count'], gps, token)
             print(status)
             self.write(status)
 

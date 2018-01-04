@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from config import var
+import json
 import sys
+import requests
 if sys.version_info[0] < 3:
     from Tkinter import *
 else:
@@ -24,11 +26,27 @@ def check():
     blank3.insert(0, sugar)
     blank4.insert(0, oil)
 
+def update_count(uname, r, w, s, o, each):
+    db.agent_details.update({"uid": uname}, {'$set': \
+                                                 {"item_count": {"Rice": each["Rice"] + r, "Wheat": each["Wheat"] + w,
+                                                                 "Sugar": each["Sugar"] + s, "Oil": each["Oil"] + o}}})
+
 def mark(uid, typ, quan):
     for each in db.items.find({"name": typ, "assigned_to": "Factory"}):
         if not quan:
             break
-        db.items.update({"code": each["code"]}, {'$set': {"assigned_to": uid}})
+        data = {
+            "from": "Factory",
+            "to": uid,
+            "jwt": "1234567890",
+            'gps': "",
+            'prev_trans': "None"
+        }
+        tid = requests.post("http://35.200.142.66:8080/transaction",
+                            data=data).json()
+        print(tid)
+
+        db.items.update({"code": each["code"]}, {'$set': {"assigned_to": uid, "transaction_id": tid['transactionHash']}})
         quan -= 1
 
 def is_number(s, val):
@@ -51,12 +69,11 @@ def assign():
         w = is_number(wb.get(), wheat)
         s = is_number(sb.get(), sugar)
         o = is_number(ob.get(), oil)
-        db.agent_details.update({"uid": uname}, {'$set':\
-            {"item_count": {"Rice": each["Rice"]+r, "Wheat": each["Wheat"]+w, "Sugar": each["Sugar"]+s, "Oil": each["Oil"]+o}}})
         mark(uid, "Rice", r)
         mark(uid, "Wheat", w)
         mark(uid, "Sugar", s)
         mark(uid, "Oil", o)
+        update_count(uname, r, w, s, o, each)
         name.delete(0, 'end')
         blank1.delete(0, 'end')
         blank2.delete(0, 'end')

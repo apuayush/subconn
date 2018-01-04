@@ -19,7 +19,7 @@ def setToken(user, name):
 
 def aadhar_scanner_parser(xml_data):
     data = soup(xml_data, "lxml").printletterbarcodedata
-    res = {"uname": data['name'], "uid": data['uid'], "district": data['dist'], "state": data['state'],
+    res = {"uname": data['name'], "uid": int(data['uid']), "district": data['dist'], "state": data['state'],
            "postalcode": data['pc'], "gender": data['gender']}
     return res
 
@@ -47,9 +47,9 @@ def validation(from_id, to_id, items, item_count, gps, token):
     # Item validation
     for item in items:
         item_db = yield db.items.find_one({'code': item})
-        assigned_to = item_db['assigned_to']
+        assigned_to = int(item_db['assigned_to'])
 
-        if assigned_to != from_id:
+        if assigned_to != int(from_id):
             status['invalid_list'].append(item)
             flag = False
 
@@ -73,21 +73,29 @@ def validation(from_id, to_id, items, item_count, gps, token):
             data = {
                 "from": from_id,
                 "to": to_id,
-                "jwt": token,
                 'gps': gps,
-                'prev_item_transaction': last_transaction_id
+                'jwt': token,
+                'prev_trans': last_transaction_id
             }
             tid = requests.post("http://35.200.142.66:8080/transaction",
                                 data=data)
             tid = tid.json()
-            print(type(tid))
             yield db.items.update({"code": item},
                                   {"$set":
                                        {'transaction_id': tid['transactionHash'],
                                         "assigned_to": to_id}})
 
-        yield db.aadhar.update({'uid': to_id} , {'$set':{'item_count':
-                                                                    item_count
+        aadhar_det = yield db.aadhar.find_one({'uid': from_id})
+        aadhar_data = aadhar_det['item_count']
+        aadhar_items = {
+            'Rice': aadhar_data['Rice'] - prod['Rice'],
+            'Wheat': aadhar_data['Wheat'] - prod['Wheat'],
+            'Oil': aadhar_data['Oil'] - prod['Oil'],
+            'Sugar': aadhar_data['Sugar'] - prod['Sugar']
+        }
+        print(aadhar_items)
+        yield db.aadhar.update({'uid': int(to_id)}, {'$set': {'item_count':
+                                                                    aadhar_items
                                                                  }})
 
         agent_det = yield db.agent_details.find_one({'uid': from_id})
@@ -99,8 +107,9 @@ def validation(from_id, to_id, items, item_count, gps, token):
             'Sugar': agent_data['Sugar'] - prod['Sugar']
         }
 
+        print(agent_items)
         yield db.agent_details.update({'uid': from_id},{'$set': {
-            'items_count': agent_items
+            'item_count': agent_items
         }})
         status['success'] = True
         status["message"] = tid['transactionHash']
