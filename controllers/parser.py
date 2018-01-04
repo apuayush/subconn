@@ -22,14 +22,10 @@ class AadharAuthentication(RequestHandler):
             xml_data = self.get_argument('xml_data')
             items_req = self.get_argument('items')
             gps = self.get_argument('gps')
-            to_id = None
+            to_id = aadhar_scanner_parser(xml_data)
 
-            try:
-                to_id = aadhar_scanner_parser(xml_data)
-                print("I m inside aadhar")
-            except:
-                self.write_error(400, "Not aadhar")
-                print("Not inside aadhar")
+            if to_id == None:
+                self.write_error("400", message="Not aadhar")
                 return
 
             from_id = int(token_from_db['uid'])
