@@ -10,10 +10,13 @@ class AadharAuthentication(RequestHandler):
 
     @coroutine
     def post(self):
-        req = self.get_argument('req')
-        req = json.loads(req)
+        req = self.request.body.decode('utf-8')
+        try:
+            req = json.loads(req)
+        except:
+            pass
         token = req['token']
-
+        print(token)
         token_from_db = yield db.token.find_one({'token': token})
 
         if token_from_db is None:
@@ -56,12 +59,6 @@ class AadharAuthentication(RequestHandler):
             print(status)
             self.write(status)
 
-    def write_error(self, status_code, message="Internal Server Error", **kwargs):
-        jsonData = {
-            'status': 400,
-            'message': message
-        }
-        self.write(json.dumps(jsonData))
 
     def options(self):
         self.set_status(204)
