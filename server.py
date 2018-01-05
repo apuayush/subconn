@@ -6,7 +6,8 @@ class ApplicationHandler(Application):
     def __init__(self):
         handlers = routes.routes
         settings = dict(
-            debug=True
+            debug=True,
+
         )
         Application.__init__(self, handlers, **settings)
 
