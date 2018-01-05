@@ -10,7 +10,9 @@ class AadharAuthentication(RequestHandler):
 
     @coroutine
     def post(self):
-        token = self.get_argument('token')
+        req = self.get_argument('req')
+        req = json.loads(req)
+        token = req['token']
 
         token_from_db = yield db.token.find_one({'token': token})
 
@@ -19,9 +21,9 @@ class AadharAuthentication(RequestHandler):
 
         else:
             # request parameters
-            xml_data = self.get_argument('xml_data')
-            items_req = self.get_argument('items')
-            gps = self.get_argument('gps')
+            xml_data = req['xml_data']
+            items_req = req['items']
+            gps = req['gps']
 
             to_id = aadhar_scanner_parser(xml_data)
 
@@ -45,18 +47,18 @@ class AadharAuthentication(RequestHandler):
                     **to_id
                 }
                 yield db.aadhar.insert(customer)
-
+            print(items_req)
             # items_req = ''.join(items_req.split())
             # items_req = items_req[1:-1].replace(r'"', "").split(',')
 
-            items_req = json.loads(items_req)
+            print(items_req)
             status = yield validation(int(from_id), int(to_id['uid']), items_req, customer['item_count'], gps, token)
             print(status)
             self.write(status)
 
     def write_error(self, status_code, message="Internal Server Error", **kwargs):
         jsonData = {
-            'status': int(status_code),
+            'status': 400,
             'message': message
         }
         self.write(json.dumps(jsonData))
