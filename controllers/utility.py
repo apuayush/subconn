@@ -77,7 +77,6 @@ def validation(from_id, to_id, items, item_count, gps, token):
                 "from": from_id,
                 "to": to_id,
                 'gps': gps,
-                'jwt': token,
                 'prev_trans': last_transaction_id
             }
             tid = requests.post("http://35.200.142.66:8080/transaction",

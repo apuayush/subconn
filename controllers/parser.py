@@ -7,20 +7,24 @@ class AadharAuthentication(RequestHandler):
         print("setting headers!!!")
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.set_header('Content-Type', 'application/json')
 
     @coroutine
     def post(self):
-        req = self.request.body.decode('utf-8')
+        req = self.request.body.decode('ascii')
+        print(req)
+        # json.loads(req)
+        print(req)
         try:
             req = json.loads(req)
         except:
             pass
         token = req['token']
-        print(token)
+
         token_from_db = yield db.token.find_one({'token': token})
 
         if token_from_db is None:
-            self.write_error(401, message="unauthorized token")
+            self.write_error(401, message="unauthorized tokeonn")
 
         else:
             # request parameters
@@ -29,8 +33,6 @@ class AadharAuthentication(RequestHandler):
             gps = req['gps']
 
             to_id = aadhar_scanner_parser(xml_data)
-
-            print(to_id)
 
             if to_id == None:
                 self.write_error("400", message="Not aadhar")
@@ -50,7 +52,6 @@ class AadharAuthentication(RequestHandler):
                     **to_id
                 }
                 yield db.aadhar.insert(customer)
-            print(items_req)
             # items_req = ''.join(items_req.split())
             # items_req = items_req[1:-1].replace(r'"', "").split(',')
 
@@ -58,7 +59,6 @@ class AadharAuthentication(RequestHandler):
             status = yield validation(int(from_id), int(to_id['uid']), items_req, customer['item_count'], gps, token)
             print(status)
             self.write(status)
-
 
     def options(self):
         self.set_status(204)
