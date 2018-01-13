@@ -21,7 +21,6 @@ def aadhar_scanner_parser(xml_data):
 
     data = xmltodict.parse(xml_data)
     data = dict(data['PrintLetterBarcodeData'])
-    print(data.keys())
     return {'uid':data['@uid'],'uname':data['@name']}
 
 

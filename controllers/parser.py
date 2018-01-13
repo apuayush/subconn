@@ -11,10 +11,7 @@ class AadharAuthentication(RequestHandler):
 
     @coroutine
     def post(self):
-        req = self.request.body.decode('ascii')
-        print(req)
-        # json.loads(req)
-        print(req)
+        req = self.request.body.decode()
         try:
             req = json.loads(req)
         except:
@@ -24,7 +21,7 @@ class AadharAuthentication(RequestHandler):
         token_from_db = yield db.token.find_one({'token': token})
 
         if token_from_db is None:
-            self.write_error(401, message="unauthorized tokeonn")
+            self.write_error(401, message="unauthorized token")
 
         else:
             # request parameters
@@ -59,6 +56,14 @@ class AadharAuthentication(RequestHandler):
             status = yield validation(int(from_id), int(to_id['uid']), items_req, customer['item_count'], gps, token)
             print(status)
             self.write(status)
+
+    def write_error(self, status_code, message="Internal Server Error", **kwargs):
+        jsonData = {
+            'status': int(status_code),
+            'message': message
+        }
+        self.write(json.dumps(jsonData))
+
 
     def options(self):
         self.set_status(204)
